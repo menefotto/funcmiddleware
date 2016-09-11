@@ -1,3 +1,10 @@
+//Package limiter implements a single function which does implement the decorator
+// pattern , what is does is limits the number of go routines spanned, the number
+// of concurrent go routines is controlles by the exported variable named GorountineNum
+// it does not take care of error handling in any way. The limiter function accept
+// a function returning a value and and errror named of type LimiterFunc, and a sleep
+// time wich is inserted right after a function call.
+
 package limiter
 
 import "time"
@@ -9,13 +16,13 @@ var (
 
 type LimiterFunc func() (interface{}, error)
 
-func Limiter(fn LimiterFunc, sleep time.Duration) {
+func Limiter(fn LimiterFunc, wait time.Duration) {
 	limiterChan <- struct{}{}
 	go func() {
 		defer func() {
 			<-limiterChan
 		}()
 		fn()
-		time.Sleep(time.Millisecond * sleep)
+		time.Sleep(wait)
 	}()
 }
