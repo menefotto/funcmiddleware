@@ -7,10 +7,13 @@
 
 package limiter
 
-import "time"
+import (
+	"runtime"
+	"time"
+)
 
 var (
-	GoroutineNum = 5
+	GoroutineNum = runtime.GOMAXPROCS(0) * 2
 	limiterChan  = make(chan struct{}, GoroutineNum)
 )
 
