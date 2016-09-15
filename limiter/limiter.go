@@ -17,15 +17,14 @@ var (
 	limiterChan  = make(chan struct{}, GoroutineNum)
 )
 
-type LimiterFunc func() (interface{}, error)
-
-func Limiter(fn LimiterFunc, wait time.Duration) {
+func Limiter(fn func(), wait time.Duration) {
 	limiterChan <- struct{}{}
 	go func() {
 		defer func() {
 			<-limiterChan
 		}()
 		fn()
+
 		time.Sleep(wait)
 	}()
 }
